@@ -11,7 +11,7 @@
                 addUncoveredFilesFromWhitelist="true"
                 processUncoveredFilesFromWhitelist="true">
 
-            <directory suffix=".php">./src/SDK/</directory>
+            <directory suffix=".php">./src/ImaginariumSDK/</directory>
         </whitelist>
     </filter>
 

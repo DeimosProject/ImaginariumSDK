@@ -2,7 +2,7 @@
 
 namespace Test;
 
-use Deimos\SDK\SDK;
+use Deimos\ImaginariumSDK\SDK;
 
 class SDKTest extends \PHPUnit_Framework_TestCase
 {

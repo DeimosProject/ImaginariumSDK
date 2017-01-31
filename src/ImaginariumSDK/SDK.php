@@ -1,6 +1,6 @@
 <?php
 
-namespace Deimos\SDK;
+namespace Deimos\ImaginariumSDK;
 
 class SDK
 {
