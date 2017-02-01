@@ -6,39 +6,47 @@ use Deimos\ImaginariumSDK\SDK;
 
 class SDKTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @var SDK
+     */
+    protected $sdk;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->sdk = new SDK();
+    }
+
     public function testSDK()
     {
-        $sdk = new SDK();
 
         $dirName = dirname(dirname(__DIR__)) . '/storage';
-        $user = uniqid(mt_rand(), true);
-        $hash = substr(md5(microtime()), 0, 6); // std hash str 6 chars
+        $user    = substr(uniqid(mt_rand(), true), 0, mt_rand(2, 5));
+        $hash    = substr(md5(microtime()), 0, 6); // std hash str 6 chars
 
-        $host = 'http://localhost/';
+        $host = 'https://localhost/';
 
-        $sdk->setBasedir($dirName);
-        $sdk->setUserName($user);
-        $sdk->setServer();
+        $this->sdk->setBasedir($dirName);
+        $this->sdk->setUserName($user);
+        $this->sdk->setServer('localhost');
 
         $this->assertEquals(
-            $host . $user . '/origin/' . $hash . '/image.png',
-            $sdk->getImageUrl($hash)
+            $host . $user . '/origin/' . $hash . '/default.png',
+            $this->sdk->getOriginalUrl($hash)
         );
 
         $this->assertEquals(
-            $sdk->getImageUrl($hash),
-            $sdk->getOriginalUrl($hash)
+            $host . $user . '/thumbs/myKey/' . $hash . '/isImage.gif',
+            $this->sdk->getThumbsUrl('myKey', $hash, 'isImage.gif')
         );
 
         $this->assertEquals(
-            $host . $user . '/myKey/' . $hash . '/isImage.gif',
-            $sdk->getImageUrl($hash, 'myKey', 'isImage.gif')
+            $dirName . '/' . $user . '/thumbs/myKey/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash,
+            $this->sdk->getThumbsPath('myKey', $hash)
         );
 
-        $this->assertEquals(
-            $dirName . '/' . $user . '/myKey/' . substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash,
-            $sdk->getImagePath($hash, 'myKey')
-        );
     }
 
     /**
@@ -46,9 +54,7 @@ class SDKTest extends \PHPUnit_Framework_TestCase
      */
     public function testServerException()
     {
-        $sdk = new SDK();
-
-        $sdk->getImageUrl('');
+        $this->sdk->getOriginalUrl('');
     }
 
     /**
@@ -56,9 +62,7 @@ class SDKTest extends \PHPUnit_Framework_TestCase
      */
     public function testBasedirException()
     {
-        $sdk = new SDK();
-
-        $sdk->getImagePath('');
+        $this->sdk->getOriginalPath('');
     }
 
     /**
@@ -66,10 +70,8 @@ class SDKTest extends \PHPUnit_Framework_TestCase
      */
     public function testUserException()
     {
-        $sdk = new SDK();
+        $this->sdk->setBasedir(__DIR__);
 
-        $sdk->setBasedir(__DIR__);
-
-        $sdk->getImagePath('');
+        $this->sdk->getOriginalPath('');
     }
 }

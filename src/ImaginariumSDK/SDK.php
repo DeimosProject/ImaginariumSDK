@@ -5,9 +5,20 @@ namespace Deimos\ImaginariumSDK;
 class SDK
 {
 
-    private $basedir;
-    private $user;
-    private $server;
+    /**
+     * @var string
+     */
+    protected $basedir;
+
+    /**
+     * @var string
+     */
+    protected $server;
+
+    /**
+     * @var string
+     */
+    protected $user;
 
     /**
      * @param string $name
@@ -26,31 +37,31 @@ class SDK
     }
 
     /**
-     * @param string $server
+     * @param string $domain
      * @param string $schema
      */
-    public function setServer($server = 'localhost', $schema = 'http')
+    public function setServer($domain, $schema = 'https')
     {
-        $this->server = $schema . '://' . $server . '/';
+        $this->server = $schema . '://' . $domain . '/';
     }
 
     /**
      * @param string $hash
-     * @param string $key
+     * @param string $storageName
      * @param string $fileName
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getImageUrl($hash, $key = 'origin', $fileName = 'image.png')
+    protected function getImageUrl($hash, $storageName = 'origin', $fileName = 'default.png')
     {
-        if(!$this->server)
+        if (!$this->server)
         {
             throw new \InvalidArgumentException('$server variable is empty');
         }
 
-        return $this->server . $this->user . '/' . $key . '/' . $hash . '/' . $fileName;
+        return $this->server . $this->user . '/' . $storageName . '/' . $hash . '/' . $fileName;
     }
 
     /**
@@ -61,34 +72,74 @@ class SDK
      *
      * @throws \InvalidArgumentException
      */
-    public function getOriginalUrl($hash, $fileName = 'image.png')
+    public function getOriginalUrl($hash, $fileName = 'default.png')
     {
         return $this->getImageUrl($hash, 'origin', $fileName);
     }
 
     /**
+     * @param string $name
      * @param string $hash
-     * @param string $key
+     * @param string $fileName
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getImagePath($hash, $key = 'origin')
+    public function getThumbsUrl($name, $hash, $fileName = 'default.png')
     {
-        if(!$this->basedir)
+        return $this->getImageUrl($hash, 'thumbs/' . $name, $fileName);
+    }
+
+    /**
+     * @param string $hash
+     * @param string $storageName
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function getImagePath($hash, $storageName = 'origin')
+    {
+        if (!$this->basedir)
         {
             throw new \InvalidArgumentException('$basedir variable is empty');
         }
 
-        if(!$this->user)
+        if (!$this->user)
         {
             throw new \InvalidArgumentException('$user variable is empty');
         }
 
 
         $hash = substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
-        return $this->basedir . $this->user . '/' . $key . '/' . $hash;
+
+        return $this->basedir . $this->user . '/' . $storageName . '/' . $hash;
+    }
+
+    /**
+     * @param string $hash
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getOriginalPath($hash)
+    {
+        return $this->getImagePath($hash);
+    }
+
+    /**
+     * @param string $name
+     * @param string $hash
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getThumbsPath($name, $hash)
+    {
+        return $this->getImagePath($hash, 'thumbs/' . $name);
     }
 
 }
