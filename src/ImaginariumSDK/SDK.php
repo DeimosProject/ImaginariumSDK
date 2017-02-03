@@ -54,14 +54,19 @@ class SDK
      *
      * @throws \InvalidArgumentException
      */
-    protected function getImageUrl($hash, $storageName = 'origin', $fileName = 'default.png')
+    protected function getImageUrl($hash, $storageName, $fileName = 'default.png')
     {
         if (!$this->server)
         {
             throw new \InvalidArgumentException('$server variable is empty');
         }
 
-        return $this->server . $this->user . '/' . $storageName . '/' . $hash . '/' . $fileName;
+        if ($storageName)
+        {
+            $storageName .= '/';
+        }
+
+        return $this->server . $this->user . '/' . $storageName . $hash . '/' . $fileName;
     }
 
     /**
@@ -74,7 +79,7 @@ class SDK
      */
     public function getOriginalUrl($hash, $fileName = 'default.png')
     {
-        return $this->getImageUrl($hash, 'origin', $fileName);
+        return $this->getImageUrl($hash, '', $fileName);
     }
 
     /**
@@ -88,7 +93,7 @@ class SDK
      */
     public function getThumbsUrl($name, $hash, $fileName = 'default.png')
     {
-        return $this->getImageUrl($hash, 'thumbs/' . $name, $fileName);
+        return $this->getImageUrl($hash, $name, $fileName);
     }
 
     /**

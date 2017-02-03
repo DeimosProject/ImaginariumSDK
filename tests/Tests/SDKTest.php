@@ -33,12 +33,12 @@ class SDKTest extends \PHPUnit_Framework_TestCase
         $this->sdk->setServer('localhost');
 
         $this->assertEquals(
-            $host . $user . '/origin/' . $hash . '/default.png',
+            $host . $user . '/' . $hash . '/default.png',
             $this->sdk->getOriginalUrl($hash)
         );
 
         $this->assertEquals(
-            $host . $user . '/thumbs/myKey/' . $hash . '/isImage.gif',
+            $host . $user . '/myKey/' . $hash . '/isImage.gif',
             $this->sdk->getThumbsUrl('myKey', $hash, 'isImage.gif')
         );
 
