@@ -148,7 +148,12 @@ class SDK
      */
     public function getThumbsPath($name, $hash)
     {
-        return $this->getImagePath($hash, 'thumbs/' . $name);
+        if($name)
+        {
+            $name = '/' . $name;
+        }
+
+        return $this->getImagePath($hash, 'thumbs' . $name);
     }
 
 }
