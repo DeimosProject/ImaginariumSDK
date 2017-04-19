@@ -99,14 +99,20 @@ class SDK
     /**
      * @param string $hash
      * @param string $storageName
+     * @param bool   $withBaseDir
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    protected function getImagePath($hash, $storageName = 'origin')
+    protected function getImagePath($hash, $storageName = null, $withBaseDir = true)
     {
-        if (!$this->basedir)
+        if(!$storageName)
+        {
+            $storageName = 'origin';
+        }
+
+        if ($withBaseDir && !$this->basedir)
         {
             throw new \InvalidArgumentException('$basedir variable is empty');
         }
@@ -123,30 +129,34 @@ class SDK
 
         $hash = substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
 
-        return $this->basedir . $this->user . '/' . $storageName . '/' . $hash;
+        $path = $this->user . '/' . $storageName . '/' . $hash;
+
+        return ($withBaseDir ? $this->basedir : '' ) . $path;
     }
 
     /**
      * @param string $hash
+     * @param bool   $withBaseDir
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getOriginalPath($hash)
+    public function getOriginalPath($hash, $withBaseDir = true)
     {
-        return $this->getImagePath($hash);
+        return $this->getImagePath($hash, null, $withBaseDir);
     }
 
     /**
      * @param string $name
      * @param string $hash
+     * @param bool   $withBaseDir
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getThumbsPath($name, $hash)
+    public function getThumbsPath($name, $hash, $withBaseDir = true)
     {
         if($name)
         {
