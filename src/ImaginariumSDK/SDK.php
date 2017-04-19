@@ -116,7 +116,7 @@ class SDK
             throw new \InvalidArgumentException('$user variable is empty');
         }
 
-        if(strlen($hash) > 3)
+        if(strlen($hash) < 4)
         {
             $hash = str_pad($hash, 4, 0, STR_PAD_LEFT);
         }
