@@ -21,6 +21,21 @@ class SDK
     protected $user;
 
     /**
+     * @var int
+     */
+    protected $partSize = 2;
+
+    /**
+     * @var int
+     */
+    protected $partsCount = 2;
+
+    /**
+     * @var string
+     */
+    protected $hashPadStr = '0';
+
+    /**
      * @param string $name
      */
     public function setUserName($name)
@@ -96,6 +111,28 @@ class SDK
         return $this->getImageUrl($hash, $name, $fileName);
     }
 
+    protected function splitHash($hash)
+    {
+        $result = '';
+
+        $minLenght = ($this->partsCount * $this->partSize);
+        $padHash = $hash;
+
+        if(strlen($hash) < $minLenght)
+        {
+            $padHash = str_pad($hash, $minLenght, $this->hashPadStr, STR_PAD_LEFT);
+        }
+
+        $i = 0;
+        while($i < $this->partsCount)
+        {
+            $result .= substr($padHash , ($i * $this->partSize), $this->partSize) . '/';
+            $i++;
+        }
+
+        return $result . $hash;
+    }
+
     /**
      * @param string $hash
      * @param string $storageName
@@ -122,12 +159,8 @@ class SDK
             throw new \InvalidArgumentException('$user variable is empty');
         }
 
-        if(strlen($hash) < 4)
-        {
-            $hash = str_pad($hash, 4, 0, STR_PAD_LEFT);
-        }
 
-        $hash = substr($hash, 0, 2) . '/' . substr($hash, 2, 2) . '/' . $hash;
+        $hash = $this->splitHash($hash);
 
         $path = $this->user . '/' . $storageName . '/' . $hash;
 
@@ -163,7 +196,7 @@ class SDK
             $name = '/' . $name;
         }
 
-        return $this->getImagePath($hash, 'thumbs' . $name);
+        return $this->getImagePath($hash, 'thumbs' . $name, $withBaseDir);
     }
 
 }
