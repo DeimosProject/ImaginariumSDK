@@ -64,14 +64,15 @@ class SDK
      * @param string $hash
      * @param string $storageName
      * @param string $fileName
+     * @param bool   $withServer
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    protected function getImageUrl($hash, $storageName, $fileName = 'default.png')
+    protected function getImageUrl($hash, $storageName, $fileName = 'default.png', $withServer = true)
     {
-        if (!$this->server)
+        if ($withServer && !$this->server)
         {
             throw new \InvalidArgumentException('$server variable is empty');
         }
@@ -81,34 +82,36 @@ class SDK
             $storageName .= '/';
         }
 
-        return $this->server . $this->user . '/' . $storageName . $hash . '/' . $fileName;
+        return ($withServer ? $this->server : '') . $this->user . '/' . $storageName . $hash . '/' . $fileName;
     }
 
     /**
      * @param string $hash
      * @param string $fileName
+     * @param bool   $withServer
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getOriginalUrl($hash, $fileName = 'default.png')
+    public function getOriginalUrl($hash, $fileName = 'default.png', $withServer = true)
     {
-        return $this->getImageUrl($hash, '', $fileName);
+        return $this->getImageUrl($hash, '', $fileName, $withServer);
     }
 
     /**
      * @param string $name
      * @param string $hash
      * @param string $fileName
+     * @param bool   $withServer
      *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
-    public function getThumbsUrl($name, $hash, $fileName = 'default.png')
+    public function getThumbsUrl($name, $hash, $fileName = 'default.png', $withServer = true)
     {
-        return $this->getImageUrl($hash, $name, $fileName);
+        return $this->getImageUrl($hash, $name, $fileName, $withServer);
     }
 
     protected function splitHash($hash)

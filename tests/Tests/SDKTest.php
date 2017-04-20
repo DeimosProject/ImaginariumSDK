@@ -64,6 +64,11 @@ class SDKTest extends \PHPUnit\Framework\TestCase
         $this->sdk->getOriginalUrl('');
     }
 
+    public function testServerNotException()
+    {
+        $this->assertNotEmpty($this->sdk->getOriginalUrl('_', '_', false));
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
